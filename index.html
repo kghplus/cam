@@ -35,7 +35,7 @@
 <link rel="alternate" type="application/atom+xml" title="KGH Plus - Atom" href="https://kghplus.blogspot.com/feeds/513315177296524118/comments/default" />
 <!-- Font Awesome Free 5.15.1 -->
 <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/fontawesome.min.css' rel='stylesheet'/>
-<link crossorigin='anonymous' href='https://cdn.jsdelivr.net/gh/kghplus/KGH1/manifest.json' rel='manifest'/>
+<link crossorigin='anonymous' href='https://cdn.jsdelivr.net/gh/kghplus/cam/manifest.json' rel='manifest'/>
 <meta content='yes' name='mobile-web-app-capable'/>
 <meta content='yes' name='apple-mobile-web-app-capable'/>
 <meta content='KGH SHOP' name='apple-mobile-web-app-title'/>
@@ -1613,6 +1613,56 @@ _WidgetManager._RegisterWidget('_ImageView', new _WidgetInfo('Image101', 'gnews-
 _WidgetManager._RegisterWidget('_LinkListView', new _WidgetInfo('LinkList103', 'gnews-free-about-section', document.getElementById('LinkList103'), {}, 'displayModeFull'));
 _WidgetManager._RegisterWidget('_LinkListView', new _WidgetInfo('LinkList104', 'footer-menu', document.getElementById('LinkList104'), {}, 'displayModeFull'));
 _WidgetManager._RegisterWidget('_ContactFormView', new _WidgetInfo('ContactForm1', 'hidden-widgets', document.getElementById('ContactForm1'), {'contactFormMessageSendingMsg': 'Sending...', 'contactFormMessageSentMsg': 'Your message has been sent.', 'contactFormMessageNotSentMsg': 'Message could not be sent. Please try again later.', 'contactFormInvalidEmailMsg': 'A valid email address is required.', 'contactFormEmptyMessageMsg': 'Message field cannot be empty.', 'title': 'Contact Form', 'blogId': '3266799750000865021', 'contactFormNameMsg': 'Name', 'contactFormEmailMsg': 'Email', 'contactFormMessageMsg': 'Message', 'contactFormSendMsg': 'Send', 'contactFormToken': 'APlU3lzUDEkWEiY-yVRSjZd3gcvm:1775703642369', 'submitUrl': 'https://www.blogger.com/contact-form.do'}, 'displayModeFull'));
+</script>
+</script>
+<!-- Blogger Scripts -->
+<script type='text/javascript'>
+//<![CDATA[
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      // ប្រើ Link ថ្មីដែលទាញចេញពី GitHub kghplus/cam
+      navigator.serviceWorker.register('https://cdn.jsdelivr.net/gh/kghplus/cam/sw.js', { scope: 'https://kghplus.github.io/cam' })
+      .then(function(registration) {
+        console.log('PWA ដើរជោគជ័យជាមួយ Scope: ', registration.scope);
+      })
+      .catch(function(err) {
+        console.log('PWA ចុះឈ្មោះមិនបានសម្រេច: ', err);
+      });
+    });
+  }
+//]]>
+</script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    let refreshing = false;
+
+    // ចាប់យកព្រឹត្តិការណ៍នៅពេល Service Worker ថ្មីដណ្ដើមការគ្រប់គ្រង
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        window.location.reload(); // Refresh វេបសាយ auto
+        refreshing = true;
+      }
+    });
+
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        // បើមាន SW ថ្មីកំពុងរង់ចាំ ឱ្យវាធ្វើការភ្លាម
+        if (reg.waiting) {
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+
+        // បើរកឃើញ Update ថ្មីលើ GitHub
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          };
+        };
+      });
+    });
+  }
 </script>
 </body>
 </html>
